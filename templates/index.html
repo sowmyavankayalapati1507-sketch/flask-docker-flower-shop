@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flower Shop</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            text-align: center;
+        }
+
+        h1 {
+            color: white;
+            padding: 20px;
+        }
+
+        input {
+            padding: 10px;
+            width: 50%;
+            border-radius: 10px;
+            border: none;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px;
+            display: inline-block;
+            width: 220px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        button {
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #e63950;
+        }
+
+        .cart {
+            background: white;
+            padding: 20px;
+            margin: 30px;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🌸 Flower Bouquet Shop 🌸</h1>
+
+<input type="text" id="searchInput" placeholder="Search flowers..." onkeyup="searchProducts()">
+
+<div id="productList"></div>
+
+<div class="cart">
+    <h2>🛒 Cart</h2>
+    <div id="cartList"></div>
+    <h3 id="total"></h3>
+    <button onclick="checkout()">Checkout</button>
+</div>
+
+<script>
+let allProducts = [];
+
+const productImages = {
+    1: "/static/images/rose.jpg",
+    2: "/static/images/tulip.jpg",
+    3: "/static/images/lilly.jpg",
+    4: "/static/images/mixedflowers.jpg"
+};
+
+async function loadProducts() {
+    const res = await fetch('/products');
+    const data = await res.json();
+    allProducts = data;
+    displayProducts(data);
+}
+
+function displayProducts(products) {
+    const list = document.getElementById("productList");
+    list.innerHTML = "";
+
+    products.forEach(p => {
+        list.innerHTML += `
+            <div class="card">
+                <img src="${productImages[p.id]}" />
+                <h3>${p.name}</h3>
+                <p>₹${p.price}</p>
+                <p>⭐⭐⭐⭐☆</p>
+                <button onclick="addToCart(${p.id})">Add to Cart</button>
+            </div>
+        `;
+    });
+}
+
+function searchProducts() {
+    const value = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = allProducts.filter(p =>
+        p.name.toLowerCase().includes(value)
+    );
+    displayProducts(filtered);
+}
+
+async function addToCart(id) {
+    await fetch(`/add-to-cart/${id}`);
+    loadCart();
+}
+
+async function loadCart() {
+    const res = await fetch('/cart');
+    const data = await res.json();
+
+    const list = document.getElementById("cartList");
+    const total = document.getElementById("total");
+
+    list.innerHTML = "";
+    let sum = 0;
+
+    data.forEach((item, index) => {
+        list.innerHTML += `
+            <p>
+                ${item.name} - ₹${item.price}
+                <button onclick="removeFromCart(${index})">❌</button>
+            </p>
+        `;
+        sum += item.price;
+    });
+
+    total.innerText = "Total: ₹" + sum;
+}
+
+async function removeFromCart(index) {
+    await fetch(`/remove-from-cart/${index}`);
+    loadCart();
+}
+
+function checkout() {
+    alert("Order placed successfully! 🎉");
+}
+
+loadProducts();
+loadCart();
+</script>
+
+</body>
+</html>
