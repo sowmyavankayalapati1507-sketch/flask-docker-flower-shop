@@ -115,14 +115,11 @@ docker run -p 5000:5000 flower-shop
 
 ## Screenshots
 
-### Home Page
-![Home Page](Screenshot 2026-04-09 192203.png)
+## 📸 Screenshots
 
-### Products Page
-![Products](Screenshot 2026-04-09 192230.png)
-
-### Cart Page
-![Cart](Screenshot 2026-04-09 192253.png)
+![Home](home.png)
+![Products](product.png)
+![Cart](cart.png)
 
 ---
 
