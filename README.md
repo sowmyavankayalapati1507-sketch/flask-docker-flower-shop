@@ -117,9 +117,9 @@ docker run -p 5000:5000 flower-shop
 
 ## 📸 Screenshots
 
-![Home](home.png)
-![Products](product.png)
-![Cart](cart.png)
+| Home | Products | Cart |
+|------|---------|------|
+| ![](home.png) | ![](product.png) | ![](cart.png) |
 
 ---
 
